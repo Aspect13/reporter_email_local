@@ -1,0 +1,106 @@
+{% set name = "reporter_email" %}
+<button type="button"
+        class="btn-action btn-lg btn-secondary card card-row-1 mr-3 ml-3 flex-row align-items-center p-2"
+        data-toggle="modal"
+        data-target="#{{ name }}_integration"
+        id="create_integration_{{ name }}"
+>
+    <div class="col-2"><i class="fa fa-plus"></i></div>
+    <div class="col-3"><i class="fa fa-envelope fa-2x"></i></div>
+    <div class="col">EMAIL</div>
+</button>
+<div class="modal fixed-left fade shadow-sm" tabindex="-1" role="dialog" id="{{ name }}_integration">
+    <div class="modal-dialog modal-dialog-aside" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row w-100">
+                    <div class="col">
+                        <h2>Email integration</h2>
+                    </div>
+                    <div class="col-xs">
+                        <button type="button" id="{{ name }}_close" class="btn btn-sm btn-secondary" data-dismiss="modal"
+                                aria-label="Close">Cancel
+                        </button>
+                        <button type="button" id="{{ name }}_submit" class="btn btn-sm btn-secondary">Save</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <h9>Host</h9>
+                            <input type="text" id="{{ name }}_host" class="form-control form-control-alternative"
+                                   placeholder="SMTP host">
+                            <div class="invalid-feedback"></div>
+
+                            <h9>Port</h9>
+                            <input type="number" id="{{ name }}_port" class="form-control form-control-alternative"
+                                   placeholder="SMTP port">
+                            <div class="invalid-feedback"></div>
+
+                            <h9>User</h9>
+                            <input type="text" id="{{ name }}_user" class="form-control form-control-alternative"
+                                   placeholder="SMTP user">
+                            <div class="invalid-feedback"></div>
+
+                            <h9>Password</h9>
+                            <input type="password" id="{{ name }}_password" class="form-control form-control-alternative"
+                                   placeholder="SMTP password">
+                            <div class="invalid-feedback"></div>
+
+                            <h9>Sender</h9>
+                            <p>
+                                <h13>Optional. By default emails are sent from SMTP user</h13>
+                            </p>
+                            <input type="text" id="{{ name }}_sender" class="form-control form-control-alternative"
+                                   placeholder="Email sender">
+                            <div class="invalid-feedback"></div>
+
+
+                        </div>
+{#                        <div class="row">#}
+{#                            <div class="col pl-0">#}
+{#                                <div class="form-group">#}
+{#                                    <label for="qualys_login">Login</label>#}
+{#                                    <input type="text" id="qualys_login" class="form-control form-control-alternative"#}
+{#                                           placeholder="Login">#}
+{#                                    <div id="error_qualys_login" class="invalid-feedback"></div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <div class="col pr-0 pl-1">#}
+{#                                <div class="form-group">#}
+{#                                    <label for="qualys_password">Password</label>#}
+{#                                    <input type="password" id="qualys_password"#}
+{#                                           class="form-control form-control-alternative" placeholder="Password">#}
+{#                                    <div id="error_qualys_password" class="invalid-feedback"></div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+                        <div class="form-group">
+                            <h9>Description</h9>
+                            <textarea class="form-control" id="{{ name }}_description" rows="3"
+                                      placeholder="Optional"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="{{ name }}_default">
+{#                            <label class="form-check-label" for="qualys_default">#}
+{#                                 integration#}
+{#                            </label>#}
+                            <h9>
+                                Set as default reporter
+                            </h9>
+                        </div>
+                        <button type="button" id="{{ name }}_test_connection" class="btn btn-sm btn-secondary mt-3">
+                            Test connection
+                        </button>
+                        <div id="error_{{ name }}_check_connection" class="invalid-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for(name + '.static', filename='js/integrations.js') }}" type="text/javascript"></script>
+
