@@ -7,7 +7,7 @@
 >
     <div class="col-2"><i class="fa fa-plus"></i></div>
     <div class="col-3"><i class="fa fa-envelope fa-2x"></i></div>
-    <div class="col">EMAIL</div>
+    <div class="col">Email</div>
 </button>
 <div class="modal fixed-left fade shadow-sm" tabindex="-1" role="dialog" id="{{ name }}_integration">
     <div class="modal-dialog modal-dialog-aside" role="document">
@@ -16,12 +16,20 @@
                 <div class="row w-100">
                     <div class="col">
                         <h2>Email integration</h2>
+                        <p v-if="id">
+                            <h13>id: [[ id ]]</h13>
+                        </p>
                     </div>
                     <div class="col-xs">
-                        <button type="button" id="{{ name }}_close" class="btn btn-sm btn-secondary" data-dismiss="modal"
-                                aria-label="Close">Cancel
+                        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal" aria-label="Close">
+                            Cancel
                         </button>
-                        <button type="button" id="{{ name }}_submit" class="btn btn-sm btn-secondary">Save</button>
+                        <button type="button" class="btn btn-sm btn-secondary"
+                                :class="{disabled: is_fetching, updating: is_fetching}"
+                                @click.prevent="id ? update() : create()"
+                        >
+                            [[ id ? 'Update' : 'Save' ]]
+                        </button>
                     </div>
                 </div>
             </div>
@@ -30,71 +38,62 @@
                     <div class="col-12">
                         <div class="form-group">
                             <h9>Host</h9>
-                            <input type="text" id="{{ name }}_host" class="form-control form-control-alternative"
-                                   placeholder="SMTP host">
-                            <div class="invalid-feedback"></div>
+                            <input type="text" v-model="host" class="form-control form-control-alternative"
+                                   placeholder="SMTP host"
+                                    :class="{ 'is-invalid': error.host }">
+                            <div class="invalid-feedback">[[ error.host ]]</div>
 
                             <h9>Port</h9>
-                            <input type="number" id="{{ name }}_port" class="form-control form-control-alternative"
-                                   placeholder="SMTP port">
-                            <div class="invalid-feedback"></div>
+                            <input type="number" class="form-control form-control-alternative" placeholder="SMTP port"
+                                   v-model="port"
+                                   :class="{ 'is-invalid': error.port }"
+                            >
+                            <div class="invalid-feedback">[[ error.port ]]</div>
 
                             <h9>User</h9>
-                            <input type="text" id="{{ name }}_user" class="form-control form-control-alternative"
-                                   placeholder="SMTP user">
-                            <div class="invalid-feedback"></div>
+                            <input type="text" v-model="user" class="form-control form-control-alternative"
+                                   placeholder="SMTP user"
+                                    :class="{ 'is-invalid': error.user }">
+                            <div class="invalid-feedback">[[ error.user ]]</div>
 
                             <h9>Password</h9>
-                            <input type="password" id="{{ name }}_password" class="form-control form-control-alternative"
-                                   placeholder="SMTP password">
-                            <div class="invalid-feedback"></div>
+                            <input type="password" v-model="password" class="form-control form-control-alternative"
+                                   placeholder="SMTP password"
+                                    :class="{ 'is-invalid': error.password }">
+                            <div class="invalid-feedback">[[ error.password ]]</div>
 
                             <h9>Sender</h9>
                             <p>
                                 <h13>Optional. By default emails are sent from SMTP user</h13>
                             </p>
-                            <input type="text" id="{{ name }}_sender" class="form-control form-control-alternative"
-                                   placeholder="Email sender">
-                            <div class="invalid-feedback"></div>
+                            <input type="text" v-model="sender" class="form-control form-control-alternative"
+                                   placeholder="Email sender"
+                                    :class="{ 'is-invalid': error.sender }">
+                            <div class="invalid-feedback">[[ error.sender ]]</div>
 
 
                         </div>
-{#                        <div class="row">#}
-{#                            <div class="col pl-0">#}
-{#                                <div class="form-group">#}
-{#                                    <label for="qualys_login">Login</label>#}
-{#                                    <input type="text" id="qualys_login" class="form-control form-control-alternative"#}
-{#                                           placeholder="Login">#}
-{#                                    <div id="error_qualys_login" class="invalid-feedback"></div>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="col pr-0 pl-1">#}
-{#                                <div class="form-group">#}
-{#                                    <label for="qualys_password">Password</label>#}
-{#                                    <input type="password" id="qualys_password"#}
-{#                                           class="form-control form-control-alternative" placeholder="Password">#}
-{#                                    <div id="error_qualys_password" class="invalid-feedback"></div>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
+
                         <div class="form-group">
                             <h9>Description</h9>
-                            <textarea class="form-control" id="{{ name }}_description" rows="3"
-                                      placeholder="Optional"></textarea>
+                            <textarea class="form-control"  rows="3" placeholder="Optional"
+                                      v-model="description">
+                            </textarea>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="{{ name }}_default">
-{#                            <label class="form-check-label" for="qualys_default">#}
-{#                                 integration#}
-{#                            </label>#}
+                            <input class="form-check-input" type="checkbox" value=""
+                                    v-model="is_default">
                             <h9>
                                 Set as default reporter
                             </h9>
                         </div>
-                        <button type="button" id="{{ name }}_test_connection" class="btn btn-sm btn-secondary mt-3">
+                        <button type="button" class="btn btn-sm mt-3"
+                                @click.prevent="test_connection"
+                                :class="[{disabled: is_fetching, updating: is_fetching, 'is-invalid': error.check_connection}, test_connection_class]"
+                        >
                             Test connection
                         </button>
-                        <div id="error_{{ name }}_check_connection" class="invalid-feedback"></div>
+                        <div class="invalid-feedback">[[ error.check_connection ]]</div>
                     </div>
                 </div>
             </div>
