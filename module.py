@@ -26,6 +26,7 @@ from pylon.core.tools import module  # pylint: disable=E0611,E0401
 
 from .components import render_integration_create_modal, render_integration_card, render_reporter_toggle
 from .models.integration_pd import IntegrationModel
+from .rpc_worker import make_dusty_config
 from ..shared.utils.api_utils import add_resource_to_api
 
 
@@ -54,19 +55,11 @@ class Module(module.ModuleModel):
 
         # Register in app
         self.context.app.register_blueprint(bp)
+
         # Register template slot callback
-        # self.context.slot_manager.register_callback("security_scanners", render_qualys_card)
         self.context.slot_manager.register_callback(f"integration_card_{NAME}", render_integration_card)
         self.context.slot_manager.register_callback(f"security_{SECTION_NAME}", render_reporter_toggle)
 
-        # from .rpc_worker import get_scanner_parameters
-        # self.context.rpc_manager.register_function(get_scanner_parameters, name='qualys')
-
-        # from .rpc_worker import make_dusty_config
-        # self.context.rpc_manager.register_function(
-        #     partial(make_dusty_config, self.context),
-        #     name=NAME,
-        # )
 
         self.context.rpc_manager.call.integrations_register_section(
             name=SECTION_NAME,
@@ -80,6 +73,11 @@ class Module(module.ModuleModel):
             section=SECTION_NAME,
             settings_model=IntegrationModel,
             integration_callback=render_integration_create_modal
+        )
+
+        self.context.rpc_manager.register_function(
+            partial(make_dusty_config, self.context),
+            name=f'dusty_config_{NAME}',
         )
 
 
