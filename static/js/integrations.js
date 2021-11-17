@@ -22,7 +22,9 @@ const emailInitialState = () => ({
     is_fetching: false,
     error: {},
     test_connection_status: 0,
-    id: null
+    id: null,
+    template: '',
+    fileName: ''
 })
 
 const emailApp = Vue.createApp({
@@ -54,8 +56,8 @@ const emailApp = Vue.createApp({
             return getSelectedProjectId()
         },
         body_data() {
-            const {host, port, user, password: passwd, sender, description, is_default, project_id} = this
-            return {host, port, user, passwd, sender, description, is_default, project_id}
+            const {host, port, user, password: passwd, sender, description, is_default, project_id, template} = this
+            return {host, port, user, passwd, sender, description, is_default, project_id, template}
         },
         test_connection_class() {
             if (200 <= this.test_connection_status && this.test_connection_status < 300) {
@@ -65,6 +67,21 @@ const emailApp = Vue.createApp({
             } else {
                 return 'btn-secondary'
             }
+        },
+        base64DisplayValue() {
+            console.log('TTTTT', this.template)
+            if (this.template === '') return ''
+            const data = this.template.split('data:text/html;base64,')[1]
+            try {
+                return atob(data)
+            } catch (e) {
+                console.error(e)
+                this.error.template = 'Only files of data:text/html;base64 are supported'
+                this.template = ''
+                this.fileName = ''
+                return ''
+            }
+
         }
     },
     watch: {
@@ -75,6 +92,26 @@ const emailApp = Vue.createApp({
         }
     },
     methods: {
+        handleFileUpload(event) {
+            const input = event.target
+            if (input.files && input.files[0]) {
+                let reader = new FileReader()
+                reader.onload = (e) => {
+                    delete this.error.template
+                    this.template = e.target.result
+                    this.fileName = input.files[0].name
+                    // input.setAttribute("data-title", fileName)
+                    // console.log(e.target.result)
+                }
+                reader.onerror = (e) => {
+                    this.error.template = 'error reading file'
+                    this.template = ''
+                    this.fileName = ''
+                }
+                reader.readAsDataURL(input.files[0])
+            }
+
+        },
         test_connection() {
             console.log('TEST CONN', this.$data)
             this.is_fetching = true

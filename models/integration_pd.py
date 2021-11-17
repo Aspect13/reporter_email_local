@@ -2,6 +2,8 @@ from smtplib import SMTP
 from typing import Optional
 
 from pydantic import BaseModel
+from pydantic.class_validators import validator
+from pydantic.error_wrappers import ValidationError
 from pylon.core.tools import log
 
 
@@ -11,6 +13,7 @@ class IntegrationModel(BaseModel):
     user: str
     passwd: str
     sender: Optional[str]
+    template: Optional[str] = 'data:text/html;base64,PGRpdj5EZWZhdWx0IHRlbXBsYXRlPC9kaXY+'
 
     def check_connection(self) -> bool:
         try:
@@ -21,3 +24,10 @@ class IntegrationModel(BaseModel):
         except Exception as e:
             log.exception(e)
             return False
+
+    @validator('template')
+    def validate_base64(cls, value: str):
+        print('Validating value', value)
+        if value:
+            assert value.startswith('data:text/html;base64,'), 'value must start with "data:text/html;base64,"'
+        return value
