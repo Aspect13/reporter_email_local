@@ -155,7 +155,7 @@ const emailApp = Vue.createApp({
                 if (response.ok) {
                     this.modal.modal('hide')
                     alertMain.add('Email reporter created!', 'success-overlay')
-                    setTimeout(() => location.reload(), 2000)
+                    setTimeout(() => location.reload(), 1500)
                 } else {
                     this.handleError(response)
                 }
@@ -190,7 +190,7 @@ const emailApp = Vue.createApp({
                 if (response.ok) {
                     this.modal.modal('hide')
                     alertMain.add('Email reporter updated!', 'success-overlay')
-                    setTimeout(() => location.reload(), 2000)
+                    setTimeout(() => location.reload(), 1500)
                 } else {
                     this.handleError(response)
                 }
@@ -206,7 +206,7 @@ const emailApp = Vue.createApp({
                 this.is_fetching = false
                 if (response.ok) {
                     alertMain.add('Email integration deleted')
-                    setTimeout(() => location.reload(), 2500)
+                    setTimeout(() => location.reload(), 1000)
                 } else {
                     this.handleError(response)
                     alertMain.add(`Deletion error. <button class="btn btn-primary" @click="modal.modal('show')">Open modal<button>`)
@@ -220,3 +220,13 @@ emailApp.config.compilerOptions.isCustomElement = tag => ['h9', 'h13'].includes(
 
 const emailVm = emailApp.mount('#reporter_email_integration')
 
+$(document).ready(() => {
+    $('#reporter_email_integration').on('dragover', (e) => {
+        e.preventDefault()
+        $('#reporter_email_integration input[type=file]').css({'height': '300px'})
+    })
+    $('#reporter_email_integration').on('drop', (e) => {
+        !(e.target.tagName.toLowerCase() === 'input' && e.target.type === 'file') && e.preventDefault()
+        $('#reporter_email_integration input[type=file]').css({'height': '100px'})
+    })
+})

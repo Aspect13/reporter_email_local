@@ -9,9 +9,7 @@ def make_dusty_config(context, test_params, scanner_params):
     #
     integration = context.rpc_manager.call.integrations_get_by_id(scanner_params['id'])
 
-    result = {
-        'a': 'b'
-    }
+    result = integration.settings
     #
     log.info("Result: %s", result)
     #

@@ -4,6 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic.class_validators import validator
 from pydantic.error_wrappers import ValidationError
+from pydantic.fields import ModelField
 from pylon.core.tools import log
 
 
@@ -26,8 +27,9 @@ class IntegrationModel(BaseModel):
             return False
 
     @validator('template')
-    def validate_base64(cls, value: str):
-        print('Validating value', value)
+    def validate_base64(cls, value: str, field: ModelField):
         if value:
             assert value.startswith('data:text/html;base64,'), 'value must start with "data:text/html;base64,"'
-        return value
+            return value
+        else:
+            return field.default
